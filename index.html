@@ -1,0 +1,3474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GIST CAFE | SmartQueue</title>
+
+<style>
+/* =====================================================
+   COLOR THEME
+===================================================== */
+
+:root{
+    --bg:#fffaf3;
+    --card:#ffffff;
+    --primary:#4da3f1;
+    --primary-dark:#2488b8;
+    --accent:#1d93b5;
+    --accent-light:#fff1dc;
+    --cream:#fff7ed;
+    --text:#29201b;
+    --muted:#786e67;
+    --border:#eadfd4;
+    --green:#15803d;
+    --green-bg:#dcfce7;
+    --red:#b91c1c;
+    --red-bg:#fee2e2;
+    --yellow:#45b2ef;
+    --yellow-bg:#fef3c7;
+    --shadow:0 12px 35px rgba(91,44,15,.10);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+    scroll-padding-top:90px;
+}
+
+body{
+    font-family:
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fffaf3,
+            #fff7ed
+        );
+
+    color:var(--text);
+    line-height:1.5;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+button{
+    font:inherit;
+    cursor:pointer;
+    border:none;
+}
+
+.wrap{
+    width:92%;
+    max-width:1150px;
+    margin:auto;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    background:rgba(255,255,255,.96);
+
+    border-bottom:
+        1px solid var(--border);
+
+    box-shadow:
+        0 4px 20px rgba(91,44,15,.06);
+
+    backdrop-filter:blur(10px);
+}
+
+.nav{
+    min-height:70px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:20px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    font-size:20px;
+    font-weight:900;
+
+    color:var(--primary);
+}
+
+.logo-icon{
+    width:42px;
+    height:42px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:12px;
+
+    color:white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--accent)
+        );
+
+    box-shadow:
+        0 7px 18px rgba(124,63,22,.25);
+}
+
+.logo span{
+    color:var(--accent);
+}
+
+nav{
+    display:flex;
+    align-items:center;
+    gap:24px;
+}
+
+nav a{
+    color:var(--muted);
+    font-size:14px;
+    font-weight:700;
+
+    transition:.2s;
+}
+
+nav a:hover{
+    color:var(--primary);
+}
+
+.auth{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.btn{
+    padding:11px 17px;
+    border-radius:10px;
+    font-weight:800;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+}
+
+.primary{
+    color:white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--accent)
+        );
+
+    box-shadow:
+        0 6px 16px rgba(124,63,22,.18);
+}
+
+.secondary{
+    color:var(--primary);
+    background:var(--accent-light);
+}
+
+.danger{
+    color:var(--red);
+    background:var(--red-bg);
+}
+
+.small{
+    padding:7px 12px;
+    font-size:13px;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero{
+    padding:75px 0;
+
+    background:
+        radial-gradient(
+            circle at 10% 20%,
+            rgba(217,119,6,.13),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 30%,
+            rgba(124,63,22,.10),
+            transparent 30%
+        );
+}
+
+.hero-grid{
+    display:grid;
+    grid-template-columns:
+        1.1fr .9fr;
+
+    gap:50px;
+
+    align-items:center;
+}
+
+.badge{
+    display:inline-block;
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    background:var(--accent-light);
+
+    color:var(--primary);
+
+    font-size:12px;
+
+    font-weight:900;
+
+    margin-bottom:18px;
+}
+
+.hero h1{
+    font-size:
+        clamp(40px,6vw,66px);
+
+    line-height:1.05;
+
+    margin-bottom:20px;
+}
+
+.hero h1 span{
+    color:var(--accent);
+}
+
+.hero-text{
+    max-width:580px;
+
+    color:var(--muted);
+
+    font-size:17px;
+
+    margin-bottom:26px;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+
+/* =====================================================
+   CARDS
+===================================================== */
+
+.card{
+    background:var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:22px;
+
+    padding:25px;
+
+    box-shadow:var(--shadow);
+}
+
+
+/* =====================================================
+   QUEUE CARD
+===================================================== */
+
+.queue-card{
+    text-align:center;
+}
+
+.queue-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:18px;
+}
+
+.live{
+    background:var(--green-bg);
+    color:var(--green);
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    font-size:11px;
+
+    font-weight:900;
+}
+
+.wait-box{
+    padding:30px 15px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7ed,
+            #ffedd5
+        );
+
+    border:
+        1px solid #fed7aa;
+}
+
+.wait-label{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.wait-number{
+    font-size:65px;
+
+    font-weight:900;
+
+    line-height:1.1;
+
+    color:var(--primary);
+}
+
+.wait-number small{
+    font-size:20px;
+    color:var(--muted);
+}
+
+.status{
+    display:inline-block;
+
+    padding:7px 14px;
+
+    border-radius:30px;
+
+    font-size:11px;
+
+    font-weight:900;
+}
+
+.status-good{
+    background:var(--green-bg);
+    color:var(--green);
+}
+
+.status-normal{
+    background:var(--yellow-bg);
+    color:var(--yellow);
+}
+
+.status-busy{
+    background:var(--red-bg);
+    color:var(--red);
+}
+
+.stats{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:10px;
+
+    margin-top:14px;
+}
+
+.stat{
+    background:var(--cream);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:12px;
+
+    padding:13px;
+
+    text-align:center;
+}
+
+.stat strong{
+    display:block;
+
+    color:var(--primary);
+
+    font-size:22px;
+}
+
+.stat span{
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+
+/* =====================================================
+   SECTIONS
+===================================================== */
+
+section{
+    padding:65px 0;
+}
+
+.section-title{
+    text-align:center;
+
+    font-size:32px;
+
+    margin-bottom:7px;
+}
+
+.section-subtitle{
+    text-align:center;
+
+    color:var(--muted);
+
+    margin-bottom:30px;
+}
+
+
+/* =====================================================
+   PRODUCTS
+===================================================== */
+
+.products{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:17px;
+}
+
+.product{
+    background:var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 7px 22px rgba(91,44,15,.06);
+
+    transition:.2s;
+}
+
+.product:hover{
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 14px 30px rgba(91,44,15,.12);
+}
+
+.product-image{
+    height:125px;
+
+    display:grid;
+
+    place-items:center;
+
+    font-size:55px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7ed,
+            #ffedd5
+        );
+}
+
+.product-content{
+    padding:15px;
+}
+
+.product h3{
+    font-size:17px;
+}
+
+.price{
+    color:var(--accent);
+
+    font-weight:900;
+
+    font-size:17px;
+
+    margin:5px 0 12px;
+}
+
+.full{
+    width:100%;
+}
+
+
+/* =====================================================
+   ORDER
+===================================================== */
+
+.order-card{
+    max-width:750px;
+
+    margin:auto;
+}
+
+.order-item{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:12px;
+
+    background:var(--cream);
+
+    border-radius:11px;
+
+    margin-bottom:8px;
+}
+
+.quantity{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+}
+
+.quantity button{
+    width:28px;
+    height:28px;
+
+    border-radius:8px;
+
+    background:var(--accent-light);
+
+    color:var(--primary);
+
+    font-weight:900;
+}
+
+.total{
+    display:flex;
+
+    justify-content:space-between;
+
+    border-top:
+        1px solid var(--border);
+
+    padding-top:15px;
+
+    margin-top:14px;
+
+    margin-bottom:15px;
+
+    font-size:19px;
+
+    font-weight:900;
+}
+
+.empty{
+    text-align:center;
+
+    color:var(--muted);
+
+    padding:18px;
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+.dashboard{
+    display:none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7ed,
+            #fffbeb
+        );
+}
+
+.dashboard.active{
+    display:block;
+}
+
+.dashboard-card{
+    background:white;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:22px;
+
+    padding:26px;
+
+    box-shadow:var(--shadow);
+}
+
+.dashboard-top{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:22px;
+}
+
+.dashboard-top h2{
+    color:var(--primary);
+}
+
+.history-title{
+    margin:
+        25px 0 12px;
+}
+
+
+/* =====================================================
+   MANAGER
+===================================================== */
+
+.manager{
+    display:none;
+
+    background:#fff8f0;
+}
+
+.manager.active{
+    display:block;
+}
+
+.manager-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:12px;
+
+    margin-bottom:20px;
+}
+
+.manager-stat{
+    padding:18px;
+
+    border-radius:14px;
+
+    background:white;
+
+    border:
+        1px solid var(--border);
+
+    text-align:center;
+}
+
+.manager-stat strong{
+    display:block;
+
+    font-size:28px;
+
+    color:var(--primary);
+}
+
+.form{
+    display:grid;
+
+    grid-template-columns:
+        1fr auto;
+
+    gap:15px;
+
+    align-items:end;
+
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+
+    font-size:13px;
+
+    font-weight:800;
+
+    margin-bottom:6px;
+}
+
+input{
+    width:100%;
+
+    padding:12px 13px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:10px;
+
+    background:white;
+
+    color:var(--text);
+
+    font:inherit;
+
+    outline:none;
+}
+
+input:focus{
+    border-color:var(--accent);
+
+    box-shadow:
+        0 0 0 3px rgba(217,119,6,.10);
+}
+
+.queue-row{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:13px;
+
+    background:var(--cream);
+
+    border-radius:11px;
+
+    margin-bottom:8px;
+}
+
+
+/* =====================================================
+   LOGIN MODAL
+===================================================== */
+
+.modal{
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:500;
+
+    background:
+        rgba(41,32,27,.65);
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.login-box{
+    width:100%;
+
+    max-width:430px;
+
+    position:relative;
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:28px;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.25);
+}
+
+.close{
+    position:absolute;
+
+    top:12px;
+    right:14px;
+
+    width:35px;
+    height:35px;
+
+    border-radius:50%;
+
+    background:#f5f5f5;
+
+    color:#555;
+
+    font-size:22px;
+}
+
+.login-title{
+    color:var(--primary);
+
+    margin-bottom:5px;
+}
+
+.login-subtitle{
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-bottom:18px;
+}
+
+.login-buttons{
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:8px;
+
+    margin-bottom:18px;
+}
+
+.login-buttons button{
+    padding:11px;
+
+    border-radius:10px;
+
+    background:#f8f3ee;
+
+    color:var(--muted);
+
+    font-weight:800;
+}
+
+.login-buttons button.active{
+    background:var(--primary);
+
+    color:white;
+}
+
+.error{
+    display:none;
+
+    margin-top:10px;
+
+    padding:10px;
+
+    border-radius:9px;
+
+    background:var(--red-bg);
+
+    color:var(--red);
+
+    font-size:13px;
+}
+
+.demo-info{
+    margin-top:14px;
+
+    padding:11px;
+
+    border-radius:10px;
+
+    background:var(--accent-light);
+
+    color:var(--primary);
+
+    font-size:12px;
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+#toast{
+    position:fixed;
+
+    left:50%;
+
+    bottom:25px;
+
+    transform:
+        translateX(-50%)
+        translateY(80px);
+
+    background:#29201b;
+
+    color:white;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    opacity:0;
+
+    transition:.3s;
+
+    z-index:800;
+
+    max-width:90%;
+
+    text-align:center;
+}
+
+#toast.show{
+    transform:
+        translateX(-50%)
+        translateY(0);
+
+    opacity:1;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+    background:#2b1b12;
+
+    color:#cfc4bc;
+
+    text-align:center;
+
+    padding:35px 15px;
+
+    margin-top:20px;
+}
+
+footer strong{
+    color:#f59e0b;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:950px){
+
+    .hero-grid{
+        grid-template-columns:1fr;
+    }
+
+    .products{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:650px){
+
+    nav{
+        display:none;
+    }
+
+    .nav{
+        justify-content:center;
+    }
+
+    .auth{
+        width:100%;
+
+        justify-content:center;
+    }
+
+    .products{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .stats{
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+    .form{
+        grid-template-columns:1fr;
+    }
+
+    .manager-grid{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        padding:50px 0;
+    }
+
+    .hero h1{
+        font-size:42px;
+    }
+
+}
+
+@media(max-width:450px){
+
+    .products{
+        grid-template-columns:1fr;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .login-buttons{
+        grid-template-columns:1fr;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+<div class="wrap nav">
+
+<div class="logo">
+
+<div class="logo-icon">
+☕
+</div>
+
+GIST <span>CAFE</span>
+
+</div>
+
+
+<nav>
+
+<a href="#home">
+Home
+</a>
+
+<a href="#products">
+Products
+</a>
+
+<a href="#services">
+Services
+</a>
+
+<a href="#orders">
+Orders
+</a>
+
+<a href="#dashboard"
+id="dashboardLink"
+style="display:none">
+
+Dashboard
+
+</a>
+
+</nav>
+
+
+<div class="auth" id="authArea">
+
+<button
+class="btn secondary small"
+onclick="openLogin('person')">
+
+Person Login
+
+</button>
+
+<button
+class="btn primary small"
+onclick="openLogin('manager')">
+
+Manager Login
+
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+
+
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<section
+class="hero"
+id="home">
+
+<div class="wrap hero-grid">
+
+
+<div>
+
+<div class="badge">
+
+☕ GIST CAFETERIA • SMARTQUEUE
+
+</div>
+
+
+<h1>
+
+Fresh food.
+
+<br>
+
+Less <span>waiting.</span>
+
+</h1>
+
+
+<p class="hero-text">
+
+Welcome to GIST Cafe. Browse our products,
+place your order and check your estimated
+waiting time without standing in a long queue.
+
+</p>
+
+
+<div class="hero-buttons">
+
+<a href="#products">
+
+<button class="btn primary">
+
+Explore Products
+
+</button>
+
+</a>
+
+
+<button
+class="btn secondary"
+onclick="openLogin('person')">
+
+Person Login
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- LIVE QUEUE -->
+
+<div class="card queue-card">
+
+<div class="queue-header">
+
+<strong>
+☕ Live Cafe Queue
+</strong>
+
+<span class="live">
+● LIVE
+</span>
+
+</div>
+
+
+<div class="wait-box">
+
+<div class="wait-label">
+
+Estimated wait if you join now
+
+</div>
+
+
+<div class="wait-number">
+
+<span id="homeWait">
+0
+</span>
+
+<small>
+min
+</small>
+
+</div>
+
+
+<span
+id="homeStatus"
+class="status status-good">
+
+SHORT WAIT
+
+</span>
+
+</div>
+
+
+<div class="stats">
+
+<div class="stat">
+
+<strong id="homeQueue">
+0
+</strong>
+
+<span>
+People in Queue
+</span>
+
+</div>
+
+
+<div class="stat">
+
+<strong id="homeService">
+3
+</strong>
+
+<span>
+Min / Person
+</span>
+
+</div>
+
+
+<div class="stat">
+
+<strong>
+OPEN
+</strong>
+
+<span>
+Cafe Status
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PRODUCTS
+===================================================== -->
+
+<section id="products">
+
+<div class="wrap">
+
+<h2 class="section-title">
+Our Products
+</h2>
+
+<p class="section-subtitle">
+Fresh and affordable food available at GIST Cafe.
+</p>
+
+
+<div
+class="products"
+id="productGrid">
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SERVICES
+===================================================== -->
+
+<section id="services">
+
+<div class="wrap">
+
+<h2 class="section-title">
+Our Services
+</h2>
+
+<p class="section-subtitle">
+Simple services designed for students and staff.
+</p>
+
+
+<div class="products">
+
+<div class="card">
+
+<div style="font-size:40px">
+☕
+</div>
+
+<h3>
+Cafe Food
+</h3>
+
+<p style="color:var(--muted);margin-top:8px">
+
+Tea, coffee, snacks and meals
+available at affordable prices.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div style="font-size:40px">
+🧾
+</div>
+
+<h3>
+Online Ordering
+</h3>
+
+<p style="color:var(--muted);margin-top:8px">
+
+Select your products and prepare
+your order before reaching the counter.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div style="font-size:40px">
+⏱️
+</div>
+
+<h3>
+Smart Queue
+</h3>
+
+<p style="color:var(--muted);margin-top:8px">
+
+Know the estimated waiting time
+before joining the queue.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div style="font-size:40px">
+📊
+</div>
+
+<h3>
+Manager Dashboard
+</h3>
+
+<p style="color:var(--muted);margin-top:8px">
+
+Manager can update queue and
+service time from one dashboard.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     ORDERS
+===================================================== -->
+
+<section id="orders">
+
+<div class="wrap">
+
+<div class="card order-card">
+
+<h2>
+🧾 My Order
+</h2>
+
+<div
+id="cart"
+style="margin-top:15px">
+
+<div class="empty">
+
+No products added yet.
+
+</div>
+
+</div>
+
+
+<div class="total">
+
+<span>
+Total
+</span>
+
+<span id="cartTotal">
+₹0
+</span>
+
+</div>
+
+
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+
+<button
+class="btn primary"
+onclick="placeOrder">
+
+Place Order & Join Queue
+
+</button>
+
+<button
+class="btn secondary"
+onclick="clearCart()">
+
+Clear Order
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PERSON DASHBOARD
+===================================================== -->
+
+<section
+class="dashboard"
+id="dashboard">
+
+<div class="wrap">
+
+<div class="dashboard-card">
+
+<div class="dashboard-top">
+
+<h2>
+👤 Person Dashboard
+</h2>
+
+<button
+class="btn danger small"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+
+<p style="color:var(--muted);margin-bottom:20px">
+
+Welcome, <strong id="personName"></strong>.
+Here you can check your order and waiting time.
+
+</p>
+
+
+<div class="wait-box">
+
+<div class="wait-label">
+
+YOUR ESTIMATED WAITING TIME
+
+</div>
+
+
+<div class="wait-number">
+
+<span id="personWait">
+0
+</span>
+
+<small>
+minutes
+</small>
+
+</div>
+
+
+<span
+id="personStatus"
+class="status status-good">
+
+SHORT WAIT
+
+</span>
+
+</div>
+
+
+<div class="stats">
+
+<div class="stat">
+
+<strong id="personToken">
+-
+</strong>
+
+<span>
+Your Token
+</span>
+
+</div>
+
+
+<div class="stat">
+
+<strong id="personAhead">
+-
+</strong>
+
+<span>
+People Ahead
+</span>
+
+</div>
+
+
+<div class="stat">
+
+<strong id="personQueue">
+0
+</strong>
+
+<span>
+Total Queue
+</span>
+
+</div>
+
+</div>
+
+
+<div style="margin-top:18px">
+
+<button
+class="btn danger"
+id="leaveButton"
+style="display:none"
+onclick="leaveQueue()">
+
+Leave Queue
+
+</button>
+
+</div>
+
+
+<h3 class="history-title">
+Previous Orders
+</h3>
+
+<div id="history">
+
+<div class="empty">
+No previous orders.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     MANAGER DASHBOARD
+===================================================== -->
+
+<section
+class="manager"
+id="managerDashboard">
+
+<div class="wrap">
+
+<div class="dashboard-card">
+
+<div class="dashboard-top">
+
+<h2>
+👨‍💼 Manager Dashboard
+</h2>
+
+<button
+class="btn danger small"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+
+<div class="manager-grid">
+
+<div class="manager-stat">
+
+<strong id="managerQueue">
+0
+</strong>
+
+<span>
+People in Queue
+</span>
+
+</div>
+
+
+<div class="manager-stat">
+
+<strong id="managerWait">
+0
+</strong>
+
+<span>
+Estimated Wait
+</span>
+
+</div>
+
+
+<div class="manager-stat">
+
+<strong id="servedCount">
+0
+</strong>
+
+<span>
+Served Today
+</span>
+
+</div>
+
+</div>
+
+
+<div class="form">
+
+<div>
+
+<label>
+Service Time (minutes per person)
+</label>
+
+<input
+type="number"
+id="serviceTime"
+min="1"
+value="3">
+
+</div>
+
+
+<button
+class="btn primary"
+onclick="saveServiceTime()">
+
+Save Time
+
+</button>
+
+</div>
+
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+
+<button
+class="btn secondary"
+onclick="addWalkIn()">
+
++ Add Walk-in
+
+</button>
+
+
+<button
+class="btn primary"
+onclick="serveNext()">
+
+Serve Next ▶
+
+</button>
+
+
+<button
+class="btn danger"
+onclick="clearQueue()">
+
+Clear Queue
+
+</button>
+
+</div>
+
+
+<h3>
+Current Queue
+</h3>
+
+<div
+id="managerQueueList"
+style="margin-top:12px">
+
+<div class="empty">
+Queue is empty.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+<strong>
+GIST CAFE
+</strong>
+
+<br><br>
+
+Smart Cafeteria & SmartQueue System
+
+<br><br>
+
+Frontend Demo • HTML • CSS • JavaScript
+
+<br><br>
+
+© 2026 GIST Cafe
+
+</footer>
+
+
+
+<!-- =====================================================
+     LOGIN MODAL
+===================================================== -->
+
+<div
+class="modal"
+id="loginModal"
+onclick="closeOutside(event)">
+
+<div class="login-box">
+
+<button
+class="close"
+onclick="closeLogin()">
+
+×
+</button>
+
+
+<h2
+class="login-title"
+id="loginTitle">
+
+Person Login
+
+</h2>
+
+
+<p class="login-subtitle">
+
+Login to access your GIST Cafe account.
+
+</p>
+
+
+<div class="login-buttons">
+
+<button
+id="personTab"
+onclick="switchLogin('person')">
+
+👤 Person Login
+
+</button>
+
+
+<button
+id="managerTab"
+onclick="switchLogin('manager')">
+
+👨‍💼 Manager Login
+
+</button>
+
+</div>
+
+
+<label id="usernameLabel">
+
+Username
+
+</label>
+
+<input
+type="text"
+id="loginUsername"
+placeholder="Enter username">
+
+
+<label>
+
+Password
+
+</label>
+
+<input
+type="password"
+id="loginPassword"
+placeholder="Enter password"
+onkeydown="if(event.key==='Enter')login()">
+
+
+<button
+class="btn primary full"
+onclick="login()">
+
+Login
+
+</button>
+
+
+<div
+class="error"
+id="loginError">
+</div>
+
+
+<div
+class="demo-info"
+id="demoInfo">
+
+Person Demo Login:<br>
+
+<strong>
+Username: Vishnu
+</strong>
+<br>
+
+<strong>
+Password: 1234
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div id="toast">
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   PRODUCT DATA
+===================================================== */
+
+const PRODUCTS = [
+
+    {
+        name:"Tea",
+        icon:"☕",
+        price:15
+    },
+
+    {
+        name:"Coffee",
+        icon:"☕",
+        price:25
+    },
+
+    {
+        name:"Burger",
+        icon:"🍔",
+        price:50
+    },
+
+    {
+        name:"Sandwich",
+        icon:"🥪",
+        price:40
+    },
+
+    {
+        name:"Noodles",
+        icon:"🍜",
+        price:45
+    },
+
+    {
+        name:"French Fries",
+        icon:"🍟",
+        price:35
+    },
+
+    {
+        name:"Cool Drink",
+        icon:"🥤",
+        price:30
+    },
+
+    {
+        name:"Pizza",
+        icon:"🍕",
+        price:70
+    }
+
+];
+
+
+/* =====================================================
+   LOGIN CREDENTIALS
+===================================================== */
+
+const PERSON_USERNAME = "vishnu";
+
+const PERSON_PASSWORD = "1234";
+
+const MANAGER_USERNAME = "gist manger";
+
+const MANAGER_PASSWORD = "1234";
+
+
+/* =====================================================
+   APPLICATION DATA
+===================================================== */
+
+let currentLoginType = "person";
+
+let currentUser = null;
+
+let cart = [];
+
+let state = {
+
+    queue:[],
+
+    serviceTime:3,
+
+    nextToken:1,
+
+    served:0
+
+};
+
+
+/* =====================================================
+   ELEMENT HELPER
+===================================================== */
+
+function $(id){
+
+    return document.getElementById(id);
+
+}
+
+
+/* =====================================================
+   LOCAL STORAGE
+===================================================== */
+
+function saveData(){
+
+    localStorage.setItem(
+        "gistCafeState",
+        JSON.stringify(state)
+    );
+
+}
+
+
+function loadData(){
+
+    const saved =
+        localStorage.getItem("gistCafeState");
+
+    if(saved){
+
+        try{
+
+            state =
+                JSON.parse(saved);
+
+        }catch(e){
+
+            state={
+                queue:[],
+                serviceTime:3,
+                nextToken:1,
+                served:0
+            };
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message){
+
+    const toast =
+        $("toast");
+
+    toast.textContent =
+        message;
+
+    toast.classList.add("show");
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer =
+        setTimeout(
+            function(){
+
+                toast.classList.remove("show");
+
+            },
+            2500
+        );
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function openLogin(type){
+
+    currentLoginType =
+        type || "person";
+
+    switchLogin(
+        currentLoginType
+    );
+
+    $("loginModal")
+        .classList.add("active");
+
+}
+
+
+function closeLogin(){
+
+    $("loginModal")
+        .classList.remove("active");
+
+    $("loginUsername").value="";
+
+    $("loginPassword").value="";
+
+    $("loginError").style.display="none";
+
+}
+
+
+function closeOutside(event){
+
+    if(
+        event.target ===
+        $("loginModal")
+    ){
+
+        closeLogin();
+
+    }
+
+}
+
+
+function switchLogin(type){
+
+    currentLoginType =
+        type;
+
+    $("loginError").style.display =
+        "none";
+
+    $("personTab")
+        .classList.toggle(
+            "active",
+            type==="person"
+        );
+
+    $("managerTab")
+        .classList.toggle(
+            "active",
+            type==="manager"
+        );
+
+
+    if(type==="person"){
+
+        $("loginTitle")
+            .textContent =
+            "Person Login";
+
+        $("usernameLabel")
+            .textContent =
+            "Username";
+
+        $("loginUsername")
+            .placeholder =
+            "Enter person username";
+
+  
+
+    }else{
+
+        $("loginTitle")
+            .textContent =
+            "Manager Login";
+
+        $("usernameLabel")
+            .textContent =
+            "Manager ID";
+
+        $("loginUsername")
+            .placeholder =
+            "Enter manager ID";
+
+
+    }
+
+}
+
+
+function login(){
+
+    const username =
+        $("loginUsername")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const password =
+        $("loginPassword")
+        .value;
+
+    const error =
+        $("loginError");
+
+
+    error.style.display =
+        "none";
+
+
+    if(!username || !password){
+
+        error.textContent =
+            "Please enter username and password.";
+
+        error.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    /* PERSON LOGIN */
+
+    if(
+        currentLoginType ===
+        "person"
+    ){
+
+        if(
+            username ===
+            PERSON_USERNAME &&
+            password ===
+            PERSON_PASSWORD
+        ){
+
+            currentUser = {
+
+                role:"person",
+
+                name:"Vishnu",
+
+                username:"vishnu"
+
+            };
+
+            closeLogin();
+
+            updateUI();
+
+            $("dashboard")
+                .scrollIntoView({
+                    behavior:"smooth"
+                });
+
+            showToast(
+                "Welcome Vishnu!"
+            );
+
+            return;
+
+        }
+
+        error.textContent =
+            "Invalid Person username or password.";
+
+        error.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    /* MANAGER LOGIN */
+
+    if(
+        username ===
+        MANAGER_USERNAME &&
+        password ===
+        MANAGER_PASSWORD
+    ){
+
+        currentUser = {
+
+            role:"manager",
+
+            name:"GIST Manager",
+
+            username:"gist manger"
+
+        };
+
+        closeLogin();
+
+        updateUI();
+
+        $("managerDashboard")
+            .scrollIntoView({
+                behavior:"smooth"
+            });
+
+        showToast(
+            "Welcome GIST Manager!"
+        );
+
+        return;
+
+    }
+
+
+    error.textContent =
+        "Invalid Manager ID or password.";
+
+    error.style.display =
+        "block";
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logout(){
+
+    currentUser =
+        null;
+
+    cart=[];
+
+    updateUI();
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+    showToast(
+        "Logged out successfully."
+    );
+
+}
+
+
+/* =====================================================
+   PRODUCT DISPLAY
+===================================================== */
+
+function renderProducts(){
+
+    $("productGrid").innerHTML =
+        PRODUCTS.map(
+            function(product,index){
+
+                return `
+
+                <div class="product">
+
+                    <div class="product-image">
+
+                        ${product.icon}
+
+                    </div>
+
+                    <div class="product-content">
+
+                        <h3>
+                            ${product.name}
+                        </h3>
+
+                        <div class="price">
+                            ₹${product.price}
+                        </div>
+
+                        <button
+                            class="btn primary full"
+                            onclick="addToCart(${index})">
+
+                            Add to Order
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =====================================================
+   CART
+===================================================== */
+
+function addToCart(index){
+
+    const product =
+        PRODUCTS[index];
+
+    const existing =
+        cart.find(
+            item =>
+                item.name ===
+                product.name
+        );
+
+
+    if(existing){
+
+        existing.quantity++;
+
+    }else{
+
+        cart.push({
+
+            name:product.name,
+
+            price:product.price,
+
+            quantity:1
+
+        });
+
+    }
+
+
+    renderCart();
+
+    showToast(
+        product.name +
+        " added to order."
+    );
+
+}
+
+
+function changeQuantity(index,change){
+
+    cart[index].quantity +=
+        change;
+
+
+    if(
+        cart[index].quantity <= 0
+    ){
+
+        cart.splice(
+            index,
+            1
+        );
+
+    }
+
+
+    renderCart();
+
+}
+
+
+function clearCart(){
+
+    cart=[];
+
+    renderCart();
+
+    showToast(
+        "Order cleared."
+    );
+
+}
+
+
+function renderCart(){
+
+    if(!cart.length){
+
+        $("cart").innerHTML =
+            `<div class="empty">
+                No products added yet.
+            </div>`;
+
+        $("cartTotal")
+            .textContent =
+            "₹0";
+
+        return;
+
+    }
+
+
+    let total=0;
+
+
+    $("cart").innerHTML =
+        cart.map(
+            function(item,index){
+
+                const itemTotal =
+                    item.price *
+                    item.quantity;
+
+                total +=
+                    itemTotal;
+
+
+                return `
+
+                <div class="order-item">
+
+                    <div>
+
+                        <strong>
+                            ${item.name}
+                        </strong>
+
+                        <br>
+
+                        <small>
+                            ₹${item.price}
+                        </small>
+
+                    </div>
+
+
+                    <div class="quantity">
+
+                        <button
+                            onclick="changeQuantity(${index},-1)">
+
+                            −
+
+                        </button>
+
+                        <strong>
+                            ${item.quantity}
+                        </strong>
+
+                        <button
+                            onclick="changeQuantity(${index},1)">
+
+                            +
+
+                        </button>
+
+                    </div>
+
+
+                    <strong>
+                        ₹${itemTotal}
+                    </strong>
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+
+    $("cartTotal")
+        .textContent =
+        "₹" + total;
+
+}
+
+
+/* =====================================================
+   PLACE ORDER
+===================================================== */
+
+function placeOrder(){
+
+    if(!cart.length){
+
+        showToast(
+            "Please add products first."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !currentUser ||
+        currentUser.role !==
+        "person"
+    ){
+
+        openLogin("person");
+
+        showToast(
+            "Please login as a person."
+        );
+
+        return;
+
+    }
+
+
+    const already =
+        state.queue.find(
+            item =>
+                item.username ===
+                currentUser.username
+        );
+
+
+    if(already){
+
+        showToast(
+            "You are already in the queue."
+        );
+
+        return;
+
+    }
+
+
+    const total =
+        cart.reduce(
+            function(sum,item){
+
+                return sum +
+                    item.price *
+                    item.quantity;
+
+            },
+            0
+        );
+
+
+    const items =
+        cart.map(
+            item =>
+                item.quantity +
+                "× " +
+                item.name
+        ).join(", ");
+
+
+    const token =
+        state.nextToken++;
+
+
+    state.queue.push({
+
+        token:token,
+
+        username:
+            currentUser.username,
+
+        name:
+            currentUser.name,
+
+        items:items,
+
+        total:total,
+
+        time:
+            new Date()
+            .toLocaleTimeString()
+
+    });
+
+
+    saveData();
+
+    cart=[];
+
+    renderCart();
+
+    updateUI();
+
+    showToast(
+        "Order placed! Your token is #" +
+        token
+    );
+
+
+    setTimeout(
+        function(){
+
+            $("dashboard")
+                .scrollIntoView({
+                    behavior:"smooth"
+                });
+
+        },
+        300
+    );
+
+}
+
+
+/* =====================================================
+   PERSON QUEUE
+===================================================== */
+
+function getPersonQueueIndex(){
+
+    if(
+        !currentUser ||
+        currentUser.role !==
+        "person"
+    ){
+
+        return -1;
+
+    }
+
+
+    return state.queue.findIndex(
+        item =>
+            item.username ===
+            currentUser.username
+    );
+
+}
+
+
+/* =====================================================
+   LEAVE QUEUE
+===================================================== */
+
+function leaveQueue(){
+
+    const index =
+        getPersonQueueIndex();
+
+
+    if(index < 0){
+
+        showToast(
+            "You are not currently in the queue."
+        );
+
+        return;
+
+    }
+
+
+    state.queue.splice(
+        index,
+        1
+    );
+
+    saveData();
+
+    updateUI();
+
+    showToast(
+        "You left the queue."
+    );
+
+}
+
+
+/* =====================================================
+   MANAGER FUNCTIONS
+===================================================== */
+
+function saveServiceTime(){
+
+    const value =
+        Number(
+            $("serviceTime").value
+        );
+
+
+    if(
+        !value ||
+        value < 1
+    ){
+
+        showToast(
+            "Service time must be at least 1 minute."
+        );
+
+        return;
+
+    }
+
+
+    state.serviceTime =
+        value;
+
+    saveData();
+
+    updateUI();
+
+    showToast(
+        "Service time updated."
+    );
+
+}
+
+
+function addWalkIn(){
+
+    state.queue.push({
+
+        token:
+            state.nextToken++,
+
+        username:null,
+
+        name:"Walk-in Customer",
+
+        items:"Walk-in order",
+
+        total:0,
+
+        time:
+            new Date()
+            .toLocaleTimeString()
+
+    });
+
+
+    saveData();
+
+    updateUI();
+
+    showToast(
+        "Walk-in customer added."
+    );
+
+}
+
+
+function serveNext(){
+
+    if(!state.queue.length){
+
+        showToast(
+            "Queue is empty."
+        );
+
+        return;
+
+    }
+
+
+    const customer =
+        state.queue.shift();
+
+
+    state.served++;
+
+
+    saveData();
+
+    updateUI();
+
+    showToast(
+        "Token #" +
+        customer.token +
+        " served."
+    );
+
+}
+
+
+function removeQueueItem(index){
+
+    state.queue.splice(
+        index,
+        1
+    );
+
+    saveData();
+
+    updateUI();
+
+}
+
+
+function clearQueue(){
+
+    if(!state.queue.length){
+
+        showToast(
+            "Queue is already empty."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            "Clear the complete queue?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    state.queue=[];
+
+    saveData();
+
+    updateUI();
+
+    showToast(
+        "Queue cleared."
+    );
+
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function getStatus(wait){
+
+    if(wait <= 10){
+
+        return {
+
+            text:"SHORT WAIT",
+
+            className:
+                "status status-good"
+
+        };
+
+    }
+
+
+    if(wait <= 20){
+
+        return {
+
+            text:"NORMAL WAIT",
+
+            className:
+                "status status-normal"
+
+        };
+
+    }
+
+
+    return {
+
+        text:"BUSY",
+
+        className:
+            "status status-busy"
+
+    };
+
+}
+
+
+function setStatus(element,wait){
+
+    const status =
+        getStatus(wait);
+
+    element.className =
+        status.className;
+
+    element.textContent =
+        status.text;
+
+}
+
+
+/* =====================================================
+   UPDATE HOME QUEUE
+===================================================== */
+
+function updateHomeQueue(){
+
+    const queue =
+        state.queue.length;
+
+    const wait =
+        queue *
+        state.serviceTime;
+
+
+    $("homeWait")
+        .textContent =
+        wait;
+
+    $("homeQueue")
+        .textContent =
+        queue;
+
+    $("homeService")
+        .textContent =
+        state.serviceTime;
+
+
+    setStatus(
+        $("homeStatus"),
+        wait
+    );
+
+}
+
+
+/* =====================================================
+   PERSON DASHBOARD
+===================================================== */
+
+function renderPersonDashboard(){
+
+    if(
+        !currentUser ||
+        currentUser.role !==
+        "person"
+    ){
+
+        return;
+
+    }
+
+
+    $("personName")
+        .textContent =
+        currentUser.name;
+
+
+    const index =
+        getPersonQueueIndex();
+
+
+    const totalQueue =
+        state.queue.length;
+
+
+    $("personQueue")
+        .textContent =
+        totalQueue;
+
+
+    if(index >= 0){
+
+        const wait =
+            index *
+            state.serviceTime;
+
+
+        $("personWait")
+            .textContent =
+            wait;
+
+
+        $("personToken")
+            .textContent =
+            "#" +
+            state.queue[index]
+                .token;
+
+
+        $("personAhead")
+            .textContent =
+            index;
+
+
+        setStatus(
+            $("personStatus"),
+            wait
+        );
+
+
+        $("leaveButton")
+            .style.display =
+            "inline-block";
+
+    }else{
+
+        const wait =
+            totalQueue *
+            state.serviceTime;
+
+
+        $("personWait")
+            .textContent =
+            wait;
+
+
+        $("personToken")
+            .textContent =
+            "-";
+
+
+        $("personAhead")
+            .textContent =
+            "-";
+
+
+        setStatus(
+            $("personStatus"),
+            wait
+        );
+
+
+        $("leaveButton")
+            .style.display =
+            "none";
+
+    }
+
+
+    $("history").innerHTML = `
+
+        <div class="order-item">
+
+            <span>
+                Your orders are shown here
+                during the demo.
+            </span>
+
+            <span>
+                ☕
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   MANAGER DASHBOARD
+===================================================== */
+
+function renderManagerDashboard(){
+
+    const queue =
+        state.queue.length;
+
+    const wait =
+        queue *
+        state.serviceTime;
+
+
+    $("managerQueue")
+        .textContent =
+        queue;
+
+
+    $("managerWait")
+        .textContent =
+        wait;
+
+
+    $("servedCount")
+        .textContent =
+        state.served;
+
+
+    $("serviceTime")
+        .value =
+        state.serviceTime;
+
+
+    if(!queue){
+
+        $("managerQueueList")
+            .innerHTML =
+            `<div class="empty">
+                Queue is empty.
+            </div>`;
+
+        return;
+
+    }
+
+
+    $("managerQueueList")
+        .innerHTML =
+        state.queue.map(
+            function(item,index){
+
+                const customer =
+                    item.name ||
+                    "Customer";
+
+
+                return `
+
+                <div class="queue-row">
+
+                    <div>
+
+                        <strong>
+                            ${index + 1}.
+                            #${item.token}
+                        </strong>
+
+                        <br>
+
+                        <small>
+                            ${customer}
+                        </small>
+
+                        <br>
+
+                        <small
+                        style="color:var(--muted)">
+
+                            ${item.items}
+
+                        </small>
+
+                    </div>
+
+
+                    <button
+                        class="btn danger small"
+                        onclick="removeQueueItem(${index})">
+
+                        Remove
+
+                    </button>
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =====================================================
+   UI UPDATE
+===================================================== */
+
+function updateUI(){
+
+    updateHomeQueue();
+
+    renderCart();
+
+
+    const person =
+        currentUser &&
+        currentUser.role ===
+        "person";
+
+
+    const manager =
+        currentUser &&
+        currentUser.role ===
+        "manager";
+
+
+    $("dashboard")
+        .classList.toggle(
+            "active",
+            person
+        );
+
+
+    $("managerDashboard")
+        .classList.toggle(
+            "active",
+            manager
+        );
+
+
+    $("dashboardLink")
+        .style.display =
+        currentUser ? "" : "none";
+
+
+    if(person){
+
+        $("dashboardLink")
+            .href =
+            "#dashboard";
+
+    }
+
+
+    if(manager){
+
+        $("dashboardLink")
+            .href =
+            "#managerDashboard";
+
+    }
+
+
+    if(person){
+
+        $("authArea")
+            .innerHTML = `
+
+                <span
+                style="font-size:13px;font-weight:800">
+
+                    👤 Vishnu
+
+                </span>
+
+                <button
+                class="btn danger small"
+                onclick="logout()">
+
+                    Logout
+
+                </button>
+
+            `;
+
+        renderPersonDashboard();
+
+    }else if(manager){
+
+        $("authArea")
+            .innerHTML = `
+
+                <span
+                style="font-size:13px;font-weight:800">
+
+                    👨‍💼 GIST Manager
+
+                </span>
+
+                <button
+                class="btn danger small"
+                onclick="logout()">
+
+                    Logout
+
+                </button>
+
+            `;
+
+        renderManagerDashboard();
+
+    }else{
+
+        $("authArea")
+            .innerHTML = `
+
+                <button
+                class="btn secondary small"
+                onclick="openLogin('person')">
+
+                    Person Login
+
+                </button>
+
+                <button
+                class="btn primary small"
+                onclick="openLogin('manager')">
+
+                    Manager Login
+
+                </button>
+
+            `;
+
+    }
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+loadData();
+
+renderProducts();
+
+renderCart();
+
+updateUI();
+
+
+/* =====================================================
+   AUTO REFRESH
+===================================================== */
+
+setInterval(
+    function(){
+
+        loadData();
+
+        updateUI();
+
+    },
+    3000
+);
+
+</script>
+
+</body>
+</html>
